@@ -46,7 +46,7 @@ const App = () => {
 
   const [currentTheme, setCurrentTheme] = useState('light');
   const [currentPage, setCurrentPage] = useState('WeatherCard');
-  const [moment, setmoment] = useState('');
+  const [moment, setmoment] = useState('day');
 
   const hr = () => {
     var hr = new Date().getHours();
