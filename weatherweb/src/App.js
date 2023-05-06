@@ -46,22 +46,23 @@ const App = () => {
 
   const [currentTheme, setCurrentTheme] = useState('light');
   const [currentPage, setCurrentPage] = useState('WeatherCard');
+  const [moment, setmoment] = useState('');
 
-  //useMemo 避免每次都須重新計算取值,佔存值
-  const moment = useEffect(() => {
+  const hr = () => {
     var hr = new Date().getHours();
     if ((hr >= 18 && hr <= 24) || (hr >= 0 && hr <= 6)) {
       return 'night';
     } else {
       return 'day';
     }
-  }, [currentCity]);
+  };
 
   useEffect(() => {
     setCurrentTheme(moment === 'day' ? 'light' : 'dark');
   }, [moment]);
 
   useEffect(() => {
+    setmoment(hr);
     localStorage.setItem('cityName', currentCity);
   }, [currentCity]);
 
