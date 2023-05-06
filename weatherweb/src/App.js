@@ -1,127 +1,93 @@
-import './App.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { ReactComponent as CloudyIcon } from './assets/day-cloudy.svg';
-import { ReactComponent as AirFlowIcon } from './assets/airFlow.svg';
-import { ReactComponent as RainIcon } from './assets/rain.svg';
-import { ReactComponent as RedoIcon } from './assets/refresh.svg';
+import { ThemeProvider } from '@emotion/react';
+import WeatherCard from './Components/WeatherCard';
+import useWeatherApi from './useWeatherApi';
+import WeatherSetting from './Components/WeatherSetting';
+import { findLocation } from './utils';
 
-//各項CSS寫入
+const theme = {
+  light: {
+    backgroundColor: '#ededed',
+    foregroundColor: '#f9f9f9',
+    boxShadow: '0 1px 3px 0 #999999',
+    titleColor: '#212121',
+    temperatureColor: '#757575',
+    textColor: '#828282',
+  },
+  dark: {
+    backgroundColor: '#1F2022',
+    foregroundColor: '#121416',
+    boxShadow:
+      '0 1px 4px 0 rgba(12, 12, 13, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.15)',
+    titleColor: '#f9f9fa',
+    temperatureColor: '#dddddd',
+    textColor: '#cccccc',
+  },
+};
+
 const Container = styled.div`
-  background-color: #ededed;
+  background-color: ${({ theme }) => theme.backgroundColor};
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const WeatherCard = styled.div`
-  position: relative;
-  min-width: 360px;
-  box-shadow: 0 1px 3px 0 #999999;
-  background-color: #f9f9f9;
-  box-sizing: border-box;
-  padding: 30px 15px;
-`;
+const App = () => {
+  const storageCity = localStorage.getItem('cityName');
+  //從setting那邊先取得所選地區，傳給APP，再用useweatherApi(地區)去改變資料
+  const [currentCity, setCurrentCity] = useState(storageCity || '屏東縣');
+  //utils去找輸入的地區
+  const currentLocation = findLocation(currentCity) || {};
 
-const Location = styled.div`
-  font-size: 28px;
-  color: ${(props) => (props.theme === 'dark' ? '#dadada' : '#212121')};
-  margin-bottom: 20px;
-`;
+  //取useWeatherApi兩個方法
+  const [weatherElement, fetchData] = useWeatherApi(currentLocation);
 
-const Description = styled.div`
-  font-size: 16px;
-  color: #828282;
-  margin-bottom: 30px;
-`;
+  const [currentTheme, setCurrentTheme] = useState('light');
+  const [currentPage, setCurrentPage] = useState('WeatherCard');
 
-const CurrentWeather = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-`;
+  //useMemo 避免每次都須重新計算取值,佔存值
+  const moment = useEffect(() => {
+    var hr = new Date().getHours();
+    if ((hr >= 18 && hr <= 24) || (hr >= 0 && hr <= 6)) {
+      return 'night';
+    } else {
+      return 'day';
+    }
+  }, [currentCity]);
 
-const Temperature = styled.div`
-  color: #757575;
-  font-size: 96px;
-  font-weight: 300;
-  display: flex;
-`;
+  useEffect(() => {
+    setCurrentTheme(moment === 'day' ? 'light' : 'dark');
+  }, [moment]);
 
-const Celsius = styled.div`
-  font-weight: normal;
-  font-size: 42px;
-`;
+  useEffect(() => {
+    localStorage.setItem('cityName', currentCity);
+  }, [currentCity]);
 
-const AirFlow = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 16x;
-  font-weight: 300;
-  color: #828282;
-  margin-bottom: 20px;
-
-  svg {
-    width: 25px;
-    height: auto;
-    margin-right: 30px;
-  }
-`;
-
-const Rain = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 16x;
-  font-weight: 300;
-  color: #828282;
-
-  svg {
-    width: 25px;
-    height: auto;
-    margin-right: 30px;
-  }
-`;
-
-const Cloudy = styled(CloudyIcon)`
-  flex-basis: 30%;
-`;
-
-const Redo = styled(RedoIcon)`
-  width: 15px;
-  height: 15px;
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-  cursor: pointer;
-`;
-
-function App() {
   return (
-    <Container>
-      <WeatherCard>
-        <Location>台北市</Location>
-        <Description>多雲時晴</Description>
-        <CurrentWeather>
-          <Temperature>
-            23
-            <Celsius>°C</Celsius>
-          </Temperature>
-          <Cloudy />
-        </CurrentWeather>
-        <AirFlow>
-          <AirFlowIcon />
-          23 m/h
-        </AirFlow>
-        <Rain>
-          <RainIcon />
-          48%
-        </Rain>
-        <Redo />
-      </WeatherCard>
-    </Container>
+    <ThemeProvider theme={theme[currentTheme]}>
+      <Container>
+        {currentPage === 'WeatherCard' && (
+          <WeatherCard
+            cityName={currentLocation.cityName}
+            weatherElement={weatherElement} //各項資料
+            moment={moment} //現在時刻
+            fetchData={fetchData} //把資料傳過去 這邊才能右下角重轉取資料
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+
+        {currentPage === 'WeatherSetting' && (
+          <WeatherSetting
+            cityName={currentLocation.cityName}
+            setCurrentCity={setCurrentCity}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+      </Container>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
