@@ -26,6 +26,10 @@ const Location = styled.div`
   font-size: 28px;
   color: ${({ theme }) => theme.titleColor};
   margin-bottom: 20px;
+
+  @media (max-width: 968px) {
+    font-size: 20px;
+  }
 `;
 
 const Description = styled.div`
@@ -33,6 +37,10 @@ const Description = styled.div`
   color: ${({ theme }) => theme.textColor};
   margin-bottom: 30px;
   pointer-events: none;
+
+  @media (max-width: 968px) {
+    font-size: 10px;
+  }
 `;
 
 const CurrentWeather = styled.div`
@@ -49,6 +57,10 @@ const Temperature = styled.div`
   font-weight: 300;
   display: flex;
   pointer-events: none;
+
+  @media (max-width: 968px) {
+    font-size: 60px;
+  }
 `;
 
 const Celsius = styled.div`
