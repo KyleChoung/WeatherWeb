@@ -28,7 +28,7 @@ const Location = styled.div`
   margin-bottom: 20px;
 
   @media (max-width: 968px) {
-    font-size: 20px;
+    font-size: 25px;
   }
 `;
 
@@ -40,6 +40,7 @@ const Description = styled.div`
 
   @media (max-width: 968px) {
     font-size: 10px;
+    margin-bottom: 10px;
   }
 `;
 
@@ -49,6 +50,10 @@ const CurrentWeather = styled.div`
   align-items: center;
   margin-bottom: 30px;
   pointer-events: none;
+
+  @media (max-width: 968px) {
+    margin-bottom: 10px;
+  }
 `;
 
 const Temperature = styled.div`
@@ -59,7 +64,7 @@ const Temperature = styled.div`
   pointer-events: none;
 
   @media (max-width: 968px) {
-    font-size: 60px;
+    font-size: 65px;
   }
 `;
 
