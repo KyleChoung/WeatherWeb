@@ -58,7 +58,7 @@ const Map = styled(MapIcon)`
   }
 
   @media (max-width: 968px) {
-    min-width: 360px;
+    min-width: 390px;
   }
 `;
 
