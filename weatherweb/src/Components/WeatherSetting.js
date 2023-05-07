@@ -9,6 +9,10 @@ const WeatherSettingWrapper = styled.div`
   background-color: ${({ theme }) => theme.foregroundColor};
   box-sizing: border-box;
   padding: 20px;
+
+  @media (max-width: 968px) {
+    margin-top: 20px;
+  }
 `;
 
 const Title = styled.div`

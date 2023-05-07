@@ -4,7 +4,8 @@ import { ThemeProvider } from '@emotion/react';
 import WeatherCard from './Components/WeatherCard';
 import useWeatherApi from './useWeatherApi';
 import WeatherSetting from './Components/WeatherSetting';
-import { findLocation } from './utils';
+import { findLocation, findMap } from './utils';
+import { ReactComponent as MapIcon } from './images/map.svg';
 
 const theme = {
   light: {
@@ -32,6 +33,33 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 968px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+const Map = styled(MapIcon)`
+  height: 75%;
+  width: 75%;
+  flex: 3;
+  max-width: 50%;
+
+  path {
+    stroke: ${({ theme }) => theme.textColor};
+    fill: transparent;
+    transition: 0.5s;
+    cursor: pointer;
+  }
+
+  path:hover {
+    fill: rgb(108, 98, 41);
+    transform: translate(-5px, -5px);
+  }
+
+  @media (max-width: 968px) {
+    min-width: 360px;
+  }
 `;
 
 const App = () => {
@@ -42,7 +70,7 @@ const App = () => {
   const currentLocation = findLocation(currentCity) || {};
 
   //取useWeatherApi兩個方法
-  const [weatherElement, fetchData] = useWeatherApi(currentLocation);
+  const [weatherElement, fetchData] = useWeatherApi(currentLocation); //這邊有錯誤
 
   const [currentTheme, setCurrentTheme] = useState('light');
   const [currentPage, setCurrentPage] = useState('WeatherCard');
@@ -57,6 +85,16 @@ const App = () => {
     }
   };
 
+  const paths = document.querySelectorAll('path');
+
+  paths.forEach((e) => {
+    e.onclick = function () {
+      const findcityname = findMap(this.dataset.name);
+      setCurrentCity(findcityname);
+      setCurrentPage('WeatherCard');
+    };
+  });
+
   useEffect(() => {
     setCurrentTheme(moment === 'day' ? 'light' : 'dark');
   }, [moment]);
@@ -69,10 +107,11 @@ const App = () => {
   return (
     <ThemeProvider theme={theme[currentTheme]}>
       <Container>
+        <Map id="Map" />
         {currentPage === 'WeatherCard' && (
           <WeatherCard
             cityName={currentLocation.cityName}
-            weatherElement={weatherElement} //各項資料
+            weatherElement={weatherElement || undefined} //各項資料
             moment={moment} //現在時刻
             fetchData={fetchData} //把資料傳過去 這邊才能右下角重轉取資料
             setCurrentPage={setCurrentPage}

@@ -14,6 +14,11 @@ const WeatherCardWrapper = styled.div`
   background-color: ${({ theme }) => theme.foregroundColor};
   box-sizing: border-box;
   padding: 30px 15px;
+  max-width: 50%;
+
+  @media (max-width: 968px) {
+    margin-top: 20px;
+  }
 `;
 
 const Location = styled.div`
@@ -26,6 +31,7 @@ const Description = styled.div`
   font-size: 16px;
   color: ${({ theme }) => theme.textColor};
   margin-bottom: 30px;
+  pointer-events: none;
 `;
 
 const CurrentWeather = styled.div`
@@ -33,6 +39,7 @@ const CurrentWeather = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  pointer-events: none;
 `;
 
 const Temperature = styled.div`
@@ -40,11 +47,13 @@ const Temperature = styled.div`
   font-size: 96px;
   font-weight: 300;
   display: flex;
+  pointer-events: none;
 `;
 
 const Celsius = styled.div`
   font-weight: normal;
   font-size: 42px;
+  pointer-events: none;
 `;
 
 const AirFlow = styled.div`
@@ -68,6 +77,7 @@ const Rain = styled.div`
   font-size: 16x;
   font-weight: 300;
   color: ${({ theme }) => theme.textColor};
+  pointer-events: none;
 
   svg {
     width: 25px;
@@ -111,6 +121,10 @@ const Cog = styled(CogIcon)`
   width: 15px;
   height: 15px;
   cursor: pointer;
+
+  path {
+    pointer-events: none;
+
 `;
 
 const WeatherCard = (props) => {
